@@ -9,6 +9,7 @@ function App() {
     const socket = socketIOClient(ENDPOINT);
     socket.on("FromAPI", data => {
       setResponse(data);
+      console.log("Connected")
     });
   }, []);
 
