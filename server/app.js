@@ -22,6 +22,7 @@ const io = socketIo(server, {
 });
 
 let interval;
+let xyz;
 
 io.on('connection', (socket) => {
     if (interval) {
@@ -33,12 +34,18 @@ io.on('connection', (socket) => {
         console.log('Client disconnected');
         clearInterval(interval);
     });
+    xyz = setInterval(() => hello(socket), 5000);
 });
+
+const hello = (socket) => {
+    const response = "Hello World";
+    socket.emit("Hello", response)
+}
 
 const getApiAndEmit = (socket) => {
     const response = new Date();
-    
+
     // Emitting a new message. Will be consumed by the client
-    
+
     socket.emit('FromAPI', response);
 };

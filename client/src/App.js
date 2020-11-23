@@ -7,10 +7,13 @@ function App() {
 
   useEffect(() => {
     const socket = socketIOClient(ENDPOINT);
-    socket.on("FromAPI", data => {
+    socket.on("FromAPI",data=>{
       setResponse(data);
-      console.log("Connected")
-    });
+      // console.log("Connected To Server")
+    })
+    socket.on("Hello",hello=>{
+      console.log(hello)
+    })
   }, []);
 
   return (
