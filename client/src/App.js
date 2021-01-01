@@ -1,24 +1,22 @@
 import React, { useState, useEffect } from "react";
 import socketIOClient from "socket.io-client";
-const ENDPOINT = "http://127.0.0.1:4001";
+const ENDPOINT = "http://127.0.0.1:5000";
 
 function App() {
   const [response, setResponse] = useState("");
 
   useEffect(() => {
     const socket = socketIOClient(ENDPOINT);
-    socket.on("FromAPI",data=>{
+    socket.on("NOTIFICATION", data => {
       setResponse(data);
-      // console.log("Connected To Server")
-    })
-    socket.on("Hello",hello=>{
-      console.log(hello)
+      console.log("Connected To Server")
     })
   }, []);
 
   return (
     <p>
-      It's <time dateTime={response}>{response}</time>
+      {"This is server response" + response}
+      {/* It's <time dateTime={response}>{response}</time> */}
     </p>
   );
 }

@@ -1,18 +1,22 @@
 const express = require('express');
 const cors = require('cors');
 const socketIo = require('socket.io');
+var http = require("http");
 
 const app = express();
 
-//implementing CORS
-//Access-control-Allow-Origin(Allowing Everyone to use our API)
-app.use(cors());
 const index = require('./routes/index');
+
+const port = process.env.PORT || 5000;
+
+app.use(cors());
+
 app.use(index);
 
-const port = process.env.PORT || 4001;
-const server = app.listen(port, () => {
-    console.log(`listening to port ${port}`);
+const server = http.createServer(app)
+
+server.listen(port, () => {
+    console.log(`Server is listening on port ${port}`);
 });
 
 const io = socketIo(server, {
@@ -21,31 +25,13 @@ const io = socketIo(server, {
     },
 });
 
-let interval;
-let xyz;
-
 io.on('connection', (socket) => {
-    if (interval) {
-        clearInterval(interval);
-    }
-    interval = setInterval(() => getApiAndEmit(socket), 1000);
-    console.log('New client connected');
-    socket.on('disconnect', () => {
-        console.log('Client disconnected');
-        clearInterval(interval);
-    });
-    xyz = setInterval(() => hello(socket), 5000);
+    console.log("User is connected with id :", socket.id)
+    setInterval(() => {
+        socket.emit("NOTIFICATION", "Some Data")
+    }, 1000);
+
+    socket.on("disconnect", (reason) => {
+        console.log("User is disconnected ", reason)
+    })
 });
-
-const hello = (socket) => {
-    const response = "Hello World";
-    socket.emit("Hello", response)
-}
-
-const getApiAndEmit = (socket) => {
-    const response = new Date();
-
-    // Emitting a new message. Will be consumed by the client
-
-    socket.emit('FromAPI', response);
-};
